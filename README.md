@@ -1,1 +1,1 @@
-# dsi321_2025
+# DSI321 Big Data Infrastructure Real-time Data Project
