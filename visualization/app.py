@@ -34,6 +34,54 @@ def load_data():
     df_all['PM25.aqi'] = df_all.groupby('stationID')['PM25.aqi'].transform(lambda x: x.fillna(method='ffill'))
     return df_all
 
+def filter_data(df, start_date, end_date, station):
+    df_filtered = df.copy()
+
+    # Filter by date
+    df_filtered = df_filtered[
+        (df_filtered['timestamp'].dt.date >= start_date) &
+        (df_filtered['timestamp'].dt.date <= end_date)
+    ]
+
+    # Filter by station
+    if station != "ทั้งหมด":
+        df_filtered = df_filtered[df_filtered['nameTH'] == station]
+
+    # Remove invalid AQI
+    df_filtered = df_filtered[df_filtered['PM25.aqi'] >= 0]
+
+    return df_filtered
+
 st.title("Air Quality Dashboard from LakeFS")
 df = load_data()
-st.write(df.head())
+
+# Sidebar settings
+with st.sidebar:
+    st.title("Air4Thai Dashboard")
+    st.header("⚙️ Settings")
+
+    max_date = df['timestamp'].max().date()
+    min_date = df['timestamp'].min().date()
+    default_start_date = min_date
+    default_end_date = max_date
+
+    start_date = st.date_input(
+        "Start date",
+        default_start_date,
+        min_value=min_date,
+        max_value=max_date
+    )
+
+    end_date = st.date_input(
+        "End date",
+        default_end_date,
+        min_value=min_date,
+        max_value=max_date
+    )
+
+    station_name = df['nameTH'].dropna().unique().tolist()
+    station_name.sort()
+    station_name.insert(0, "ทั้งหมด")
+    station = st.selectbox("Select Station", station_name)
+
+df_filtered = filter_data(df, start_date, end_date, station)
