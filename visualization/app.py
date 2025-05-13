@@ -19,12 +19,20 @@ fs = s3fs.S3FileSystem(
 # Parquet file location in LakeFS
 lakefs_s3_path = 's3a://air-quality/main/airquality.parquet/year=2025/month=5/day=4/hour=2/7400decd6afd4d1caa00b19993ed2e7a-0.parquet'
 
-@st.cache_data
+@st.cache_data()
 def load_data():
-    # Load Parquet files from LakeFS
-    parquet_file = pq.ParquetFile(fs.open(lakefs_s3_path))
-    df = parquet_file.read().to_pandas()
-    return df
+    lakefs_path = "s3://air-quality/main/airquality.parquet/year=2025"
+    data_list = fs.glob(f"{lakefs_path}/*/*/*/*")
+    df_all = pd.concat([pd.read_parquet(f"s3://{path}", filesystem=fs) for path in data_list], ignore_index=True)
+    df_all['lat'] = pd.to_numeric(df_all['lat'], errors='coerce')
+    df_all['long'] = pd.to_numeric(df_all['long'], errors='coerce')
+    df_all['year'] = df_all['year'].astype(int) 
+    df_all['month'] = df_all['month'].astype(int)
+    df_all.drop_duplicates(inplace=True)
+    df_all['PM25.aqi'] = df_all['PM25.aqi'].mask(df_all['PM25.aqi'] < 0, pd.NA)
+    # Fill value "Previous Record" Group By stationID
+    df_all['PM25.aqi'] = df_all.groupby('stationID')['PM25.aqi'].transform(lambda x: x.fillna(method='ffill'))
+    return df_all
 
 st.title("Air Quality Dashboard from LakeFS")
 df = load_data()
