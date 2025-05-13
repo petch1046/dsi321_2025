@@ -85,3 +85,57 @@ with st.sidebar:
     station = st.selectbox("Select Station", station_name)
 
 df_filtered = filter_data(df, start_date, end_date, station)
+
+# Container for KPI and main content
+placeholder = st.empty()
+
+with placeholder.container():
+
+    if not df_filtered.empty:
+        # AVG for Selection Interval
+        avg_aqi = df_filtered['PM25.aqi'].mean()
+        avg_color = df_filtered['PM25.color_id'].mean()
+
+        # Previous Day
+        prev_day = end_date - pd.Timedelta(days=1)
+        df_prev_day = filter_data(df, prev_day, prev_day, station)
+
+        # AVG of Previous Day
+        prev_avg_aqi = df_prev_day['PM25.aqi'].mean()
+        prev_avg_color = df_prev_day['PM25.color_id'].mean()
+
+        # Delta
+        delta_aqi = None if pd.isna(prev_avg_aqi) else avg_aqi - prev_avg_aqi
+        delta_color = None if pd.isna(prev_avg_color) else avg_color - prev_avg_color
+
+        # Area that have the Most AQI
+        area_highest_aqi = df_filtered.groupby('areaTH')['PM25.aqi'].mean().idxmax()
+        area_highest_aqi_val = df_filtered.groupby('areaTH')['PM25.aqi'].mean().max()
+
+        # Area Most AQI of Previous
+        if not df_prev_day.empty:
+            # area_prev_highest_aqi = df_prev_day.groupby('areaTH')['PM25.aqi'].mean().idxmax()
+            area_prev_highest_aqi_val = df_prev_day.groupby('areaTH')['PM25.aqi'].mean().max()
+            delta_area_aqi = area_highest_aqi_val - area_prev_highest_aqi_val
+        else:
+            delta_area_aqi = None
+
+        # Scorecards
+        kpi1, kpi2, kpi3 = st.columns(3)
+        kpi1.metric(
+            label="☁️ Average quality of PM2.5",
+            value=f"{avg_aqi:.2f}",
+            delta=f"{delta_aqi:+.2f}" if delta_aqi is not None else None
+        )
+        kpi2.metric(
+            label="🇹🇭 Average PM2.5 levels in Thailand",
+            value=f"{avg_color:.2f}",
+            delta=f"{delta_color:+.2f}" if delta_color is not None else None
+        )
+        kpi3.metric(
+            label="📍 Areas with the highest PM2.5 levels",
+            value=area_highest_aqi,3
+            delta=f"{delta_area_aqi:+.2f}" if delta_area_aqi is not None else None
+        )
+    else:
+        st.warning("No data found for the selected time or station.")
