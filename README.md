@@ -2,10 +2,10 @@
 ## Subject: DSI321 Big Data Infrastructure
 Prepared by: Lapatrada Truktrongkij
 
-## 📌 **Project Overview**
+## 📌 Project Overview
 This project is developed as part of the DSI321: BIG DATA INFRASTRUCTURE course, aiming to build a real-time air quality monitoring system focused on PM2.5 levels across Thailand. The system collects data from the [Air4Thai](http://air4thai.pcd.go.th), processes it through an automated pipeline orchestrated by Prefect, and presents insights through an interactive dashboard built with Streamlit. Key technologies include Docker for containerization, LakeFS for data version control, and Typhoon AI (a large language model) for generating human-readable summaries and insights. The goal is to make PM2.5 data both accessible and actionable for the general public and decision-makers.
 
-### 📖 **Introduction**
+### 📖 Introduction
 Air pollution, particularly fine particulate matter (PM2.5), has emerged as a major environmental and public health concern in Thailand. Prolonged exposure to PM2.5 can lead to serious respiratory and cardiovascular issues. Real-time monitoring of PM2.5 levels is therefore crucial for raising public awareness and informing timely responses.
 
 To support this need, the project implements a fully automated data pipeline that collects PM2.5 data from the **Air4Thai** network—an official source managed by the **Pollution Control Department of Thailand**. The system is designed for scalability, reproducibility, and ease of use by integrating modern data engineering tools.
@@ -56,11 +56,32 @@ The final output is an interactive web-based dashboard built with [Streamlit](ht
 
 - Reliable, scalable, and version-controlled system architecture.
 
-## Installation
+## 🌈 Getting Started
+To run it locally:
 
-1. Clone the repository:
-   ```bash
+1. **Clone the Repository**:
+  ```bash
    $ git clone <this-repo-url>
    $ cd <this-repo-folder>
+  ```
+2. **Start Docker Services**:
+  ```bash
    $ docker compose up -d --build
+  ```
+After successful deployment, you can access:
+Prefect Dashboard : http://localhost:4200
+JupyterLab : http://localhost:8888
+LakeFS : http://localhost:8001 (changed from default 8000)
+Stramlit : http://localhost:8501
 
+3. **Deploy Prefect Flow**:
+  ``` bash
+    python src/pipeline.py deploy
+
+    # OR via JupyterLab at http://localhost:8888 
+    
+    ## Start new terminal session
+    python deploy.py
+  ```
+
+This creates a deployment named ```data-pipeline``` in the ```default-agent-pool``` work pool
