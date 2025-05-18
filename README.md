@@ -83,4 +83,4 @@ Stramlit : http://localhost:8501
     python deploy.py
   ```
 
-This creates a deployment named ```data-pipeline``` in the ```default-agent-pool``` work pool
+This creates a deployment named ```data-pipeline``` in the ```default-agent-pool``` work pool.
