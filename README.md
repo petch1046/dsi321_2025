@@ -68,10 +68,10 @@ To run it locally:
   ```bash
    $ docker compose up -d --build
   ```
-After successful deployment, you can access:
-Prefect Dashboard : http://localhost:4200
-JupyterLab : http://localhost:8888
-LakeFS : http://localhost:8001 (changed from default 8000)
+After successful deployment, you can access:\\
+Prefect Dashboard : http://localhost:4200\\
+JupyterLab : http://localhost:8888\\
+LakeFS : http://localhost:8001 (changed from default 8000)\\
 Stramlit : http://localhost:8501
 
 3. **Deploy Prefect Flow**:
@@ -79,8 +79,7 @@ Stramlit : http://localhost:8501
     python src/pipeline.py deploy
 
     # OR via JupyterLab at http://localhost:8888 
-    
-    ## Start new terminal session
+    # Start new terminal session
     python deploy.py
   ```
 
