@@ -273,7 +273,7 @@ with placeholder.container():
         st.warning("No data found for the selected time or station.")
 
 # Visualization section
-fig_col1, fig_col2 = st.columns([1.2, 1.8], gap='medium')
+# fig_col1, fig_col2 = st.columns([1.2, 1.8], gap='medium')
 
 # Filter by station
 if station == "All Stations":
@@ -284,77 +284,77 @@ else:
     title = f"PM2.5 AQI - สถานี {station}"
 
 # Left column: Thailand map with AQI
-with fig_col1:
-    if not df_selected.empty:
-        df_map = df_selected.groupby(['stationID', 'nameTH', 'lat', 'long'], as_index=False)['PM25.aqi'].mean()
+# with fig_col1:
+if not df_selected.empty:
+    df_map = df_selected.groupby(['stationID', 'nameTH', 'lat', 'long'], as_index=False)['PM25.aqi'].mean()
 
-        fig_map = px.scatter_geo(
-            df_map,
-            lat='lat',
-            lon='long',
-            color='PM25.aqi',
-            hover_name='nameTH',
-            color_continuous_scale='Turbo',
-            title='Map of PM2.5 AQI monitoring stations in Thailand',
-            projection='natural earth'
-        )
+    fig_map = px.scatter_geo(
+        df_map,
+        lat='lat',
+        lon='long',
+        color='PM25.aqi',
+        hover_name='nameTH',
+        color_continuous_scale='Turbo',
+        title='Map of PM2.5 AQI monitoring stations in Thailand',
+        projection='natural earth'
+    )
 
-        fig_map.update_geos(
-            visible=True,
-            resolution=50,
-            showcountries=True,
-            countrycolor="grey",
-            showsubunits=True,
-            subunitcolor="lightgray",
-            showocean=True,
-            oceancolor="LightBlue",
-            showland=True,
-            landcolor="whitesmoke",
-            lakecolor="LightBlue",
-            showlakes=True,
-            lataxis_range=[5, 21],  # Define latitude
-            lonaxis_range=[93, 110] # Define longitude
-        )
+    fig_map.update_geos(
+        visible=True,
+        resolution=50,
+        showcountries=True,
+        countrycolor="grey",
+        showsubunits=True,
+        subunitcolor="lightgray",
+        showocean=True,
+        oceancolor="LightBlue",
+        showland=True,
+        landcolor="whitesmoke",
+        lakecolor="LightBlue",
+        showlakes=True,
+        lataxis_range=[5, 21],  # Define latitude
+        lonaxis_range=[93, 110] # Define longitude
+    )
 
-        fig_map.update_layout(
-            template="plotly_dark",
-            margin={"r":0,"t":40,"l":0,"b":0},
-            coloraxis_colorbar=dict(title="PM2.5 AQI")
-        )
+    fig_map.update_layout(
+        template="plotly_dark",
+        margin={"r":0,"t":40,"l":0,"b":0},
+        coloraxis_colorbar=dict(title="PM2.5 AQI")
+    )
 
-        st.plotly_chart(fig_map)
-    else:
-        st.warning("No data found for the selected time or station.")
+    st.plotly_chart(fig_map)
+else:
+    st.warning("No data found for the selected time or station.")
 
 
 # Right column: Line chart
-with fig_col2:
-    if not df_selected.empty:
-        if station == "All Stations":
-            # Filter the top 5 stations with highest average AQI
-            top_5_stations = df_selected.groupby('nameTH')['PM25.aqi'].mean().nlargest(5).index
-            df_selected_top5 = df_selected[df_selected['nameTH'].isin(top_5_stations)]
+# with fig_col2:
+if not df_selected.empty:
+    if station == "All Stations":
+        # Filter the top 5 stations with highest average AQI
+        top_5_stations = df_selected.groupby('nameTH')['PM25.aqi'].mean().nlargest(5).index
+        df_selected_top5 = df_selected[df_selected['nameTH'].isin(top_5_stations)]
             
-            fig = px.line(
-                df_selected_top5.sort_values("timestamp"),
-                x='timestamp',
-                y='PM25.aqi',
-                color='nameTH',
-                title=f"Top 5 highest AQI stations during {start_date} to {end_date}",
-            )
-        else:
-            fig = px.line(
-                df_selected.sort_values("timestamp"),
-                x='timestamp',
-                y='PM25.aqi',
-                color=None,
-                title=title,
-            )
-        
-        fig.update_layout(xaxis_title='Time', yaxis_title='PM2.5 AQI')
-        st.plotly_chart(fig)
+        fig = px.line(
+            df_selected_top5.sort_values("timestamp"),
+            x='timestamp',
+            y='PM25.aqi',
+            color='nameTH',
+            title=f"Top 5 highest AQI stations during {start_date} to {end_date}",
+        )
     else:
-        st.warning("No data found for the selected time or station.")
+        fig = px.line(
+            df_selected.sort_values("timestamp"),
+            x='timestamp',
+            y='PM25.aqi',
+            color=None,
+            title=title,
+        )
+        
+    fig.update_layout(xaxis_title='Time', yaxis_title='PM2.5 AQI')
+    st.plotly_chart(fig)
+else:
+    st.warning("No data found for the selected time or station.")
 
 # Add a button to download the data
 if st.button("Download Data"):
@@ -369,7 +369,7 @@ if st.button("Download Data"):
     st.success("Data downloaded successfully!")
     st.balloons()
 
-# CSS
+# Custom CSS for button styling
 st.markdown("""
 <style>
 .stButton button {
