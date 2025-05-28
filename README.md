@@ -123,8 +123,8 @@ The dataset used in this dashboard contains air quality readings enriched with l
   ],
   "types": [
     "datetime64[ns]", "string", "string", "string", "string", 
-    "string", "string", "float64", "float64", "int64",  
-    "float64", "int64", "int64", "int32", "int32"
+    "string", "string", "float64", "float64", "float64",  
+    "float64", "int64", "int64", "float64", "float64"
     ],
   "key_columns": [
     "timestamp", "stationID", "nameTH", "nameEN", "areaTH",
@@ -148,12 +148,12 @@ Key columns are used for data quality checks (no missing values allowed).
 | `stationType`   | `string`         | Type of station |
 | `lat`           | `float64`        | Latitude of the station                  |
 | `long`          | `float64`        | Longitude of the station                 |
-| `PM25.color_id` | `int64`          | Color ID for visualization based on PM2.5 level    |
+| `PM25.color_id` | `float64`          | Color ID for visualization based on PM2.5 level    |
 | `PM25.aqi`      | `float64`        | PM2.5 PM2.5 Air Quality Index (AQI)                   |
 | `year`          | `int64`          | Year of data record                 |
 | `month`         | `int64`          | Month of data record                 |
-| `day`           | `int32`          | Day of data record                   |
-| `hour`          | `int32`          | Hour of data record                  |
+| `day`           | `float64`          | Day of data record                   |
+| `hour`          | `float64`          | Hour of data record                  |
 
 
 ## 🧪 **Example Use Cases**
